@@ -583,7 +583,7 @@ nav {
 }
 
 /* ==========================================================================
-   HERO SECTION
+   HERO SLIDER (BEHIND MAIN TEXT)
    ========================================================================== */
 .hero {
   min-height: 100svh;
@@ -603,46 +603,181 @@ nav {
     radial-gradient(60% 50% at 80% 25%, var(--accent-subtle), transparent 75%),
     linear-gradient(180deg, transparent 0%, rgba(var(--sh), 0.4) 100%);
   pointer-events: none;
-}
-
-.hero .wrap {
-  position: relative;
   z-index: 2;
 }
 
-.hero h1 em {
-  font-style: normal;
-  color: var(--at);
-}
-
-.hero-img {
+.hero-slider {
   position: absolute;
   top: 0;
   right: 0;
-  width: min(58%, 840px);
+  width: min(64%, 960px);
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+}
+
+@media (max-width: 960px) {
+  .hero-slider {
+    width: 100%;
+    opacity: 0.82;
+  }
+}
+
+.hero-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.85s ease;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.hero-slide.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+  z-index: 2;
+}
+
+.hero-slide.to-left {
+  opacity: 0;
+  transform: translateX(-100%);
+  z-index: 1;
+}
+
+.hero-slide.to-right {
+  opacity: 0;
+  transform: translateX(100%);
+  z-index: 1;
+}
+
+.hero-slide img {
+  width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.92;
+  object-position: center;
   filter: saturate(1.05);
+}
+
+.slide-tag {
+  position: absolute;
+  bottom: 28px;
+  left: 28px;
+  background: rgba(var(--sh), 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font: 600 0.76rem var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 99px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+  z-index: 4;
+}
+
+.hero-slider-nav {
+  position: absolute;
+  bottom: 24px;
+  right: 28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 10;
+  background: rgba(var(--sh), 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: 99px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+}
+
+.slider-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+.slider-btn:hover {
+  background: var(--at);
+  border-color: var(--at);
+  color: #ffffff;
+  transform: scale(1.08);
+}
+
+.slider-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.slider-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+  border: 0;
+  background: var(--bd2);
+  cursor: pointer;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s;
+  padding: 0;
+}
+
+.slider-dot.active {
+  width: 22px;
+  background: var(--at);
 }
 
 .hero-shade {
   position: absolute;
   inset: 0;
   background: 
-    linear-gradient(90deg, var(--bg) 35%, rgba(var(--sh), 0.7) 68%, rgba(var(--sh), 0.15)),
-    linear-gradient(0deg, var(--bg) 0%, transparent 40%);
+    linear-gradient(90deg, var(--bg) 38%, rgba(var(--sh), 0.72) 68%, rgba(var(--sh), 0.18) 100%),
+    linear-gradient(0deg, var(--bg) 0%, transparent 45%);
   pointer-events: none;
+  z-index: 3;
 }
 
 @media (max-width: 960px) {
-  .hero-img {
-    width: 100%;
-    opacity: 0.35;
-  }
   .hero-shade {
-    background: linear-gradient(0deg, var(--bg) 30%, rgba(var(--sh), 0.85));
+    background: linear-gradient(0deg, var(--bg) 42%, rgba(var(--sh), 0.88) 88%);
   }
+  .slide-tag {
+    bottom: auto;
+    top: 20px;
+    left: 20px;
+  }
+  .hero-slider-nav {
+    bottom: 16px;
+    right: 16px;
+  }
+}
+
+.hero .wrap {
+  position: relative;
+  z-index: 5;
 }
 
 .hero .addr {

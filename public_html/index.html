@@ -75,7 +75,46 @@
 
 <main id="top">
 <section class="hero">
- <img class="hero-img" data-from="g13" alt="Curved cream sofa and armchairs in a bright living room" width="736" height="1308"><div class="hero-shade"></div>
+ <!-- Sliding Image Showcase behind Main Text -->
+ <div class="hero-slider" id="heroSlider" aria-label="Featured Furniture Collections" role="region">
+  <div class="hero-track" id="heroTrack">
+   <div class="hero-slide active" data-index="0">
+    <img src="images/hero-sofa.png" alt="Custom Handcrafted Modern Green Sofa Pune" width="900" height="600" fetchpriority="high">
+    <span class="slide-tag" data-en="Custom Luxury Sofas" data-hi="कस्टम लक्ज़री सोफा">Custom Luxury Sofas</span>
+   </div>
+   <div class="hero-slide" data-index="1">
+    <img src="images/hero-luxury-bed.png" alt="Designer Ambient Floating Bed with Marble Headboard" width="900" height="600" loading="lazy">
+    <span class="slide-tag" data-en="Designer Master Beds" data-hi="डिज़ाइनर मास्टर बेड">Designer Master Beds</span>
+   </div>
+   <div class="hero-slide" data-index="2">
+    <img src="images/hero-office.jpg" alt="Executive Office Workstations & Ergonomic Chairs" width="900" height="600" loading="lazy">
+    <span class="slide-tag" data-en="Executive Office Workstations" data-hi="एग्ज़ीक्यूटिव ऑफिस फर्नीचर">Executive Office Workstations</span>
+   </div>
+   <div class="hero-slide" data-index="3">
+    <img src="images/hero-chair.png" alt="Modern Revolving Swivel Lounge Chair" width="900" height="600" loading="lazy">
+    <span class="slide-tag" data-en="Living Room Swivel Chairs" data-hi="लिविंग रूम स्विवल चेयर">Living Room Swivel Chairs</span>
+   </div>
+   <div class="hero-slide" data-index="4">
+    <img src="images/hero-kids-bed.png" alt="Custom Themed Playful Bed Design" width="900" height="600" loading="lazy">
+    <span class="slide-tag" data-en="Custom Bed Designs" data-hi="कस्टम बेड डिज़ाइन">Custom Bed Designs</span>
+   </div>
+  </div>
+
+  <!-- Slide Navigation Controls -->
+  <div class="hero-slider-nav">
+   <button class="slider-btn prev" id="sliderPrev" type="button" aria-label="Previous slide">‹</button>
+   <div class="slider-dots" id="sliderDots" role="tablist" aria-label="Slide indicators">
+    <button class="slider-dot active" role="tab" aria-selected="true" aria-label="Slide 1: Sofas" data-idx="0"></button>
+    <button class="slider-dot" role="tab" aria-selected="false" aria-label="Slide 2: Master Bed" data-idx="1"></button>
+    <button class="slider-dot" role="tab" aria-selected="false" aria-label="Slide 3: Office" data-idx="2"></button>
+    <button class="slider-dot" role="tab" aria-selected="false" aria-label="Slide 4: Swivel Chair" data-idx="3"></button>
+    <button class="slider-dot" role="tab" aria-selected="false" aria-label="Slide 5: Themed Bed" data-idx="4"></button>
+   </div>
+   <button class="slider-btn next" id="sliderNext" type="button" aria-label="Next slide">›</button>
+  </div>
+ </div>
+
+ <div class="hero-shade"></div>
  <div class="wrap">
   <span class="eyebrow" data-en="Sofa and furniture manufacturer in Pune · Kothrud, West Pune" data-hi="पुणे में सोफा और फर्नीचर निर्माता · कोथरूड, वेस्ट पुणे">Sofa and furniture manufacturer in Pune · Kothrud, West Pune</span>
   <h1 data-en="Made in Pune. <em>Built bold.</em>" data-hi="पुणे में बना। <em>दमदार बना।</em>">Made in Pune. <em>Built bold.</em></h1>
@@ -404,6 +443,115 @@ $("#lbx").onclick=()=>lb.close();$("#lbp").onclick=()=>show(cur-1);$("#lbn").onc
 lb.onclick=e=>{if(e.target===lb)lb.close()};
 lb.addEventListener("keydown",e=>{if(e.key==="ArrowLeft")show(cur-1);if(e.key==="ArrowRight")show(cur+1)});
 links();
+initHeroSlider();
+
+/* Hero Slider Logic */
+function initHeroSlider() {
+  const slides = $$('.hero-slide');
+  const dots = $$('.slider-dot');
+  const prevBtn = $('#sliderPrev');
+  const nextBtn = $('#sliderNext');
+  const slider = $('#heroSlider');
+  if (!slides.length) return;
+
+  let current = 0;
+  let isAnimating = false;
+  let autoTimer = null;
+  const count = slides.length;
+
+  function goTo(target, direction = 1) {
+    if (isAnimating || target === current) return;
+    isAnimating = true;
+
+    const fromSlide = slides[current];
+    const toSlide = slides[target];
+
+    // Prepare incoming slide position
+    toSlide.style.transition = 'none';
+    toSlide.style.transform = direction > 0 ? 'translateX(100%)' : 'translateX(-100%)';
+    toSlide.style.opacity = '0';
+    toSlide.offsetHeight; // trigger reflow
+
+    // Animate slides
+    toSlide.style.transition = 'transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.85s ease';
+    fromSlide.style.transition = 'transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.85s ease';
+
+    toSlide.style.transform = 'translateX(0)';
+    toSlide.style.opacity = '1';
+
+    fromSlide.style.transform = direction > 0 ? 'translateX(-100%)' : 'translateX(100%)';
+    fromSlide.style.opacity = '0';
+
+    slides.forEach((s, idx) => {
+      s.classList.toggle('active', idx === target);
+    });
+
+    dots.forEach((d, idx) => {
+      const isActive = idx === target;
+      d.classList.toggle('active', isActive);
+      d.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+
+    current = target;
+
+    setTimeout(() => {
+      isAnimating = false;
+    }, 850);
+  }
+
+  function nextSlide() {
+    const nextIdx = (current + 1) % count;
+    goTo(nextIdx, 1);
+  }
+
+  function prevSlide() {
+    const prevIdx = (current - 1 + count) % count;
+    goTo(prevIdx, -1);
+  }
+
+  function startAuto() {
+    stopAuto();
+    autoTimer = setInterval(nextSlide, 4500);
+  }
+
+  function stopAuto() {
+    if (autoTimer) clearInterval(autoTimer);
+  }
+
+  if (nextBtn) nextBtn.onclick = () => { nextSlide(); startAuto(); };
+  if (prevBtn) prevBtn.onclick = () => { prevSlide(); startAuto(); };
+
+  dots.forEach((dot, idx) => {
+    dot.onclick = () => {
+      if (idx !== current) {
+        goTo(idx, idx > current ? 1 : -1);
+        startAuto();
+      }
+    };
+  });
+
+  if (slider) {
+    slider.addEventListener('mouseenter', stopAuto);
+    slider.addEventListener('mouseleave', startAuto);
+
+    let startX = 0;
+    slider.addEventListener('touchstart', e => {
+      startX = e.changedTouches[0].clientX;
+      stopAuto();
+    }, { passive: true });
+
+    slider.addEventListener('touchend', e => {
+      const diff = e.changedTouches[0].clientX - startX;
+      if (Math.abs(diff) > 40) {
+        if (diff < 0) nextSlide(); else prevSlide();
+      }
+      startAuto();
+    }, { passive: true });
+  }
+
+  startAuto();
+}
+
 </script>
 </body>
 </html>
